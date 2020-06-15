@@ -10,10 +10,9 @@ import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.*;
+import static ru.netology.data.RegistrationData.*;
 
-public class testModeTest {
-    RegistrationDto userActive = RegistrationData.registrationUserStatusActive();
-    RegistrationDto userBlocked = RegistrationData.registrationUserStatusBlocked();
+public class TestModeTest {
 
     @BeforeEach
     void setUpAll() {
@@ -22,6 +21,7 @@ public class testModeTest {
 
     @Test
     void shouldRegistrationLoginPasswordValidStatusActive() {
+        RegistrationDto userActive = registrationUserStatusActive();
         $("[name='login']").setValue(userActive.getLogin());
         $("[name='password']").setValue(userActive.getPassword());
         $$("button").find(exactText("Продолжить")).click();
@@ -30,6 +30,7 @@ public class testModeTest {
 
     @Test
     void shouldRegistrationLoginEmptyPasswordValidStatusActive() {
+        RegistrationDto userActive = registrationUserStatusActive();
         $("[name='password']").setValue(userActive.getPassword());
         $$("button").find(exactText("Продолжить")).click();
         SelenideElement login = $("[data-test-id='login']");
@@ -38,6 +39,7 @@ public class testModeTest {
 
     @Test
     void shouldNotRegistrationLoginValidPasswordEmptyStatusActive() {
+        RegistrationDto userActive = registrationUserStatusActive();
         $("[name='login']").setValue(userActive.getLogin());
         $$("button").find(exactText("Продолжить")).click();
         SelenideElement password = $("[data-test-id='password']");
@@ -46,7 +48,9 @@ public class testModeTest {
 
     @Test
     void shouldNotRegistrationLoginNotValidPasswordValidStatusActive() {
-        $("[name='login']").setValue("kate");
+        RegistrationDto userActive = registrationUserStatusActive();
+        RegistrationDto userNotValid= registrationUserNotValid();
+        $("[name='login']").setValue(userNotValid.getLogin());
         $("[name='password']").setValue(userActive.getPassword());
         $$("button").find(exactText("Продолжить")).click();
         $(withText("Неверно указан логин или пароль")).waitUntil(visible, 15000);
@@ -54,14 +58,17 @@ public class testModeTest {
 
     @Test
     void shouldNotRegistrationLoginValidPasswordNotValidStatusActive() {
+        RegistrationDto userActive = registrationUserStatusActive();
+        RegistrationDto userNotValid= registrationUserNotValid();
         $("[name='login']").setValue(userActive.getLogin());
-        $("[name='password']").setValue("password");
+        $("[name='password']").setValue(userNotValid.getPassword());
         $$("button").find(exactText("Продолжить")).click();
         $(withText("Неверно указан логин или пароль")).waitUntil(visible, 15000);
     }
 
     @Test
     void shouldNotRegistrationLoginValidPasswordValidStatusBlocked() {
+        RegistrationDto userBlocked = registrationUserStatusBlocked();
         $("[name='login']").setValue(userBlocked.getLogin());
         $("[name='password']").setValue(userBlocked.getPassword());
         $$("button").find(exactText("Продолжить")).click();
@@ -70,15 +77,19 @@ public class testModeTest {
 
     @Test
     void shouldNotRegistrationLoginValidPasswordNotValidStatusBlocked() {
+        RegistrationDto userBlocked = registrationUserStatusBlocked();
+        RegistrationDto userNotValid= registrationUserNotValid();
         $("[name='login']").setValue(userBlocked.getLogin());
-        $("[name='password']").setValue("password");
+        $("[name='password']").setValue(userNotValid.getPassword());
         $$("button").find(exactText("Продолжить")).click();
         $(withText("Неверно указан логин или пароль")).waitUntil(visible, 15000);
     }
 
     @Test
     void shouldNotRegistrationLoginNotValidPasswordValidStatusBlocked() {
-        $("[name='login']").setValue("kate");
+        RegistrationDto userBlocked = registrationUserStatusBlocked();
+        RegistrationDto userNotValid= registrationUserNotValid();
+        $("[name='login']").setValue(userNotValid.getLogin());
         $("[name='password']").setValue(userBlocked.getPassword());
         $$("button").find(exactText("Продолжить")).click();
         $(withText("Неверно указан логин или пароль")).waitUntil(visible, 15000);

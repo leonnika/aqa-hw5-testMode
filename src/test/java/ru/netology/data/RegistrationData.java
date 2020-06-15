@@ -12,11 +12,7 @@ public class RegistrationData {
     private RegistrationData() {
     }
 
-    public static RegistrationDto registrationUserStatusActive() {
-        Faker faker = new Faker(new Locale("en"));
-        String login = faker.regexify("[a-z]{6}");
-        String password = faker.regexify("[a-z1-9]{6}");
-        RegistrationDto user = new RegistrationDto(login, password, "active");
+    public static void jsonPart(RegistrationDto user){
         given() // "дано"
                 .spec(requestSpec) // указываем, какую спецификацию используем
                 .body(user) // передаём в теле объект, который будет преобразован в JSON
@@ -24,6 +20,14 @@ public class RegistrationData {
                 .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
                 .then() // "тогда ожидаем"
                 .statusCode(200); // код 200 OK
+    }
+
+    public static RegistrationDto registrationUserStatusActive() {
+        Faker faker = new Faker(new Locale("en"));
+        String login = faker.regexify("[a-z]{6}");
+        String password = faker.regexify("[a-z1-9]{6}");
+        RegistrationDto user = new RegistrationDto(login, password, "active");
+        jsonPart(user);
         return user;
     }
 
@@ -32,13 +36,15 @@ public class RegistrationData {
         String login = faker.regexify("[a-z]{6}");
         String password = faker.regexify("[a-z1-9]{6}");
         RegistrationDto user = new RegistrationDto(login, password, "blocked");
-        given() // "дано"
-                .spec(requestSpec) // указываем, какую спецификацию используем
-                .body(user) // передаём в теле объект, который будет преобразован в JSON
-                .when() // "когда"
-                .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
-                .then() // "тогда ожидаем"
-                .statusCode(200); // код 200 OK
+        jsonPart(user);
+        return user;
+    }
+
+    public static RegistrationDto registrationUserNotValid() {
+        Faker faker = new Faker(new Locale("en"));
+        String login = faker.regexify("[a-z]{6}");
+        String password = faker.regexify("[a-z1-9]{6}");
+        RegistrationDto user = new RegistrationDto(login, password, "blocked");
         return user;
     }
 }
